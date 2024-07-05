@@ -1,9 +1,11 @@
 package com.tiagocordeiro.apirest.services.impl;
 
 import com.tiagocordeiro.apirest.domain.User;
+import com.tiagocordeiro.apirest.domain.dto.UserDTO;
 import com.tiagocordeiro.apirest.repositories.UserRepository;
 import com.tiagocordeiro.apirest.services.UserService;
 import com.tiagocordeiro.apirest.services.exceptions.ObjectNotFoundException;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository repository;
 
+    @Autowired
+    private ModelMapper mapper;
+
     @Override
     public User findById(Integer id) {
         Optional<User> obj = repository.findById(id);
@@ -25,5 +30,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> findAll() {
         return repository.findAll();
+    }
+
+    @Override
+    public User create(UserDTO obj) {
+       return repository.save(mapper.map(obj,User.class));
     }
 }
