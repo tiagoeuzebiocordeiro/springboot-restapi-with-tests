@@ -41,9 +41,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User update(UserDTO obj) {
-        repository.findById(obj.getId()).orElseThrow(() -> new ObjectNotFoundException("This is doesn't exists."));
+        repository.findById(obj.getId()).orElseThrow(() -> new ObjectNotFoundException("This Id doesn't exists."));
         findByEmail(obj);
         return repository.save(mapper.map(obj, User.class));
+    }
+
+    @Override
+    public void delete(Integer id) {
+        repository.findById(id).orElseThrow(() -> new ObjectNotFoundException("This Id doesn't exists."));
+        repository.deleteById(id);
     }
 
     private void findByEmail(UserDTO obj) {

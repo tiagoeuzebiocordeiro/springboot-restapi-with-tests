@@ -18,13 +18,15 @@ import java.util.stream.Collectors;
 @RequestMapping(value = "/users")
 public class UserResource {
 
+    private static final String ID = "/{id}";
+
     @Autowired
     private ModelMapper mapper;
 
     @Autowired
     private UserService service;
 
-    @GetMapping(value = "/{id}")
+    @GetMapping(value = ID)
     public ResponseEntity<UserDTO> findById(@PathVariable Integer id) {
         UserDTO dto = mapper.map(service.findById(id), UserDTO.class);
         return ResponseEntity.ok().body(dto);
@@ -42,11 +44,17 @@ public class UserResource {
         return ResponseEntity.created(uri).build();
     }
 
-    @PutMapping(value = "/{id}")
+    @PutMapping(value = ID)
     public ResponseEntity<UserDTO> update(@PathVariable Integer id, @RequestBody UserDTO obj) {
         obj.setId(id);
         User newObj = service.update(obj);
         return ResponseEntity.ok().body(mapper.map(newObj, UserDTO.class));
+    }
+
+    @DeleteMapping(value = ID)
+    public ResponseEntity<Void> delete(@PathVariable Integer id) {
+        service.delete(id);
+        return ResponseEntity.noContent().build();
     }
 
 }
