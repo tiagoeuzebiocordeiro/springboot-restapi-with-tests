@@ -41,6 +41,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User update(UserDTO obj) {
+        repository.findById(obj.getId()).orElseThrow(() -> new ObjectNotFoundException("This is doesn't exists."));
         findByEmail(obj);
         return repository.save(mapper.map(obj, User.class));
     }
@@ -51,5 +52,7 @@ public class UserServiceImpl implements UserService {
             throw new DataIntegrityViolationException("E-mail already registered.");
         }
     }
+
+
 
 }
