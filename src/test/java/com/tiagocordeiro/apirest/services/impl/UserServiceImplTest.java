@@ -3,6 +3,7 @@ package com.tiagocordeiro.apirest.services.impl;
 import com.tiagocordeiro.apirest.domain.User;
 import com.tiagocordeiro.apirest.domain.dto.UserDTO;
 import com.tiagocordeiro.apirest.repositories.UserRepository;
+import com.tiagocordeiro.apirest.services.exceptions.ObjectNotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -57,6 +58,20 @@ class UserServiceImplTest {
         Assertions.assertEquals(ID, response.getId());
         Assertions.assertEquals(NAME, response.getName());
         Assertions.assertEquals(EMAIL, response.getEmail());
+
+    }
+
+    @Test
+    void whenFindByIdThenReturnAnObjectNotFoundException() {
+        Mockito.when(repository.findById(Mockito.anyInt()))
+                .thenThrow(new ObjectNotFoundException("Object not found"));
+
+        try {
+            service.findById(ID);
+        } catch (Exception e) {
+            assertEquals(ObjectNotFoundException.class, e.getClass());
+            assertEquals("Object not found", e.getMessage());
+        }
 
     }
 
