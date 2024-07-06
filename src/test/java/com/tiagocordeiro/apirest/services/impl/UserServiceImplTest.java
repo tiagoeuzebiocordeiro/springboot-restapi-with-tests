@@ -13,6 +13,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -73,6 +74,26 @@ class UserServiceImplTest {
             assertEquals("Object not found", e.getMessage());
         }
 
+    }
+
+    @Test
+    void whenFindAllThenReturnAnListOfUsers() {
+        Mockito.when(repository.findAll()).thenReturn(List.of(user));
+
+        List<User> list = service.findAll();
+
+        Assertions.assertNotNull(list);
+
+        /*Why size = 1? Because in this class I have only one instance of user entity (aka as user var)*/
+        Assertions.assertEquals(1, list.size());
+
+        Assertions.assertEquals(User.class, list.get(0).getClass());
+
+        /*attr assertions*/
+        Assertions.assertEquals(ID, list.get(0).getId());
+        Assertions.assertEquals(NAME, list.get(0).getName());
+        Assertions.assertEquals(EMAIL, list.get(0).getEmail());
+        Assertions.assertEquals(PASSWORD, list.get(0).getPassword());
     }
 
     @Test
