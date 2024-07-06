@@ -3,6 +3,7 @@ package com.tiagocordeiro.apirest.services.impl;
 import com.tiagocordeiro.apirest.domain.User;
 import com.tiagocordeiro.apirest.domain.dto.UserDTO;
 import com.tiagocordeiro.apirest.repositories.UserRepository;
+import com.tiagocordeiro.apirest.services.exceptions.DataIntegrityViolationException;
 import com.tiagocordeiro.apirest.services.exceptions.ObjectNotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -109,6 +110,20 @@ class UserServiceImplTest {
         Assertions.assertEquals(NAME, response.getName());
         Assertions.assertEquals(EMAIL, response.getEmail());
         Assertions.assertEquals(PASSWORD, response.getPassword());
+
+    }
+    @Test
+    void whenCreateThenReturnDataIntegrityViolationException() {
+        Mockito.when(repository.findByEmail(Mockito.anyString()))
+                .thenReturn(optionalUser);
+
+        try {
+            optionalUser.get().setId(2); // if diff
+            service.create(userDTO);
+        } catch (Exception e) {
+            Assertions.assertEquals(DataIntegrityViolationException.class, e.getClass());
+            Assertions.assertEquals("E-mail already registered.", e.getMessage());
+        }
 
     }
 
