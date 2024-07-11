@@ -130,7 +130,7 @@ class UserResourceTest {
         Assertions.assertNotNull(response);
         Assertions.assertEquals(ResponseEntity.class, response.getClass());
         Mockito.verify(service, Mockito.times(1)).delete(Mockito.anyInt());
-        
+
         Assertions.assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
     }
 
