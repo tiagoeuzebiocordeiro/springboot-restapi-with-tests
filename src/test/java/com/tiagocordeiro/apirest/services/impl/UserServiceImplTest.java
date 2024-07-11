@@ -131,18 +131,21 @@ class UserServiceImplTest {
 
     @Test
     void whenUpdateThenReturnSuccess() {
+        // Arrange
+        Mockito.when(repository.findById(Mockito.anyInt())).thenReturn(optionalUser);
         Mockito.when(repository.save(Mockito.any())).thenReturn(user);
+        Mockito.when(mapper.map(Mockito.any(), Mockito.eq(User.class))).thenReturn(user);
 
-        User response = service.create(userDTO);
+        // Act
+        User response = service.update(userDTO);
 
+        // Assert
         Assertions.assertNotNull(response);
-
         Assertions.assertEquals(User.class, response.getClass());
         Assertions.assertEquals(ID, response.getId());
         Assertions.assertEquals(NAME, response.getName());
         Assertions.assertEquals(EMAIL, response.getEmail());
         Assertions.assertEquals(PASSWORD, response.getPassword());
-
     }
 
     @Test
@@ -158,6 +161,18 @@ class UserServiceImplTest {
             Assertions.assertEquals("E-mail already registered.", e.getMessage());
         }
 
+    }
+
+    @Test
+    void whenUpdateThenThrowObjectNotFoundException() {
+        // Arrange
+        Mockito.when(repository.findById(Mockito.anyInt())).thenReturn(Optional.empty());
+
+        // Act & Assert
+        Exception exception = Assertions.assertThrows(ObjectNotFoundException.class, () -> {
+            service.update(userDTO);
+        });
+        Assertions.assertEquals("This Id doesn't exists.", exception.getMessage());
     }
 
     @Test
